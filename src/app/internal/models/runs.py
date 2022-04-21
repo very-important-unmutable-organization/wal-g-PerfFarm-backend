@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import List, Optional
 
-from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import Field, Relationship, SQLModel
+
 from app.internal.models.metric import Metric, MetricBase
 
 
@@ -29,5 +30,3 @@ class Run(RunBase, table=True):
 
 class RunCreate(RunBaseWithMetrics):
     pass
-
-

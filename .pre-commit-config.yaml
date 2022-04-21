@@ -3,7 +3,7 @@ repos:
     rev: 5.10.1
     hooks:
     - id: isort
-      exclude: ^tests/
+      exclude: ^migrations/
 
 -   repo: https://github.com/ambv/black
     rev: 21.12b0
@@ -16,12 +16,12 @@ repos:
     rev: 4.0.1
     hooks:
     - id: flake8
-      exclude: ^tests/
+      exclude: ^migrations/
       args: [--config, setup.cfg]
 
--   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.931
-    hooks:
-      - id: mypy
-        exclude: ^tests/
-        args: [--config, setup.cfg]
+#-   repo: https://github.com/pre-commit/mirrors-mypy
+#    rev: v0.931
+#    hooks:
+#      - id: mypy
+#        exclude: ^migrations/
+#        args: [--config, setup.cfg]
