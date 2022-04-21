@@ -1,0 +1,17 @@
+from datetime import datetime
+from typing import Optional
+
+from sqlmodel import SQLModel, Field, Relationship
+
+
+class MetricBase(SQLModel):
+    start_time: datetime
+    type: str  # TODO enum
+    value: float
+
+
+class Metric(MetricBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    run_id: Optional[int] = Field(default=None, foreign_key="run.id")
+    run: Optional["Run"] = Relationship(back_populates="metrics")
+

@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "wal-g-perffarm-backend"
+version = "0.1.0"
+description = ""
+authors = ["asd2001 <asd200101@ya.ru>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.75.0"
+uvicorn = "^0.17.6"
+alembic = "^1.7.7"
+asyncpg = "^0.25.0"
+sqlmodel = "^0.0.6"
+databases = {extras = ["postgresql"], version = "^0.5.5"}
+utcnow = "^0.3.2"
+
+[tool.poetry.dev-dependencies]
+
+[tool.isort]
+combine_as_imports = true
+include_trailing_comma = true
+line_length = 120
+profile = "black"
+
+[tool.black]
+line-length = 120
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,41 @@
+version: "3.4"
+
+services:
+  db:
+    container_name: wal-g-PerFarm-db
+    build: ./postgres
+    image: ${IMAGE_DB}
+    restart: always
+    volumes:
+      - db_volume:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    logging:
+      driver: journald
+  app:
+    container_name: wal-g-PerFarm-app
+    command: bash -c "uvicorn app.internal.main:app --host 0.0.0.0 --port 8000 --reload"
+    volumes:
+      - ./src:/src
+    build:
+      context: .
+      dockerfile: ./src/Dockerfile
+      args:
+        - ENV=${ENV}
+    image: ${IMAGE_APP}
+    ulimits:
+      nofile:
+        soft: 4096
+        hard: 4096
+    restart: always
+    logging:
+      driver: journald
+    depends_on:
+      - db
+    env_file:
+      - .env
+    ports:
+      - 127.0.0.1:${PORT_APP}:8000
+
+volumes:
+  db_volume:
