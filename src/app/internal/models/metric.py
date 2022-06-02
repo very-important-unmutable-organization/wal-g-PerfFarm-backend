@@ -5,8 +5,7 @@ from sqlmodel import Field, Relationship, SQLModel
 
 
 class MetricBase(SQLModel):
-    start_time: datetime
-    type: str  # TODO enum
+    name: str  # TODO enum
     value: float
 
 
