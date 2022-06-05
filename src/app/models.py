@@ -1,2 +1,2 @@
-from app.internal.models.metric import Metric
-from app.internal.models.runs import Run
+from app.internal.auth.models import *
+from app.internal.runs.models import *
