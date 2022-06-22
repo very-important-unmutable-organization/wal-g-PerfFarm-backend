@@ -33,7 +33,7 @@ runs_router = APIRouter(
 async def get_runs(
     session: AsyncSession = Depends(get_session),
 ) -> List[RunBaseWithMetricsAndId]:
-    result = await session.execute(select(Run).options(selectinload(Run.metrics)))
+    result = await session.execute(select(Run).distinct(Run.commit_sha).options(selectinload(Run.metrics)))
     runs = result.scalars().all()
 
     return runs
