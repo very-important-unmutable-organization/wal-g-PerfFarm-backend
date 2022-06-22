@@ -45,7 +45,11 @@ async def add_run(
     session: AsyncSession = Depends(get_session),
     user: User = Depends(get_jwt_bearer, use_cache=False),
 ) -> Run:
-    metrics = [Metric(**metric.dict()) for metric in run_create.metrics]
+    metrcs = [metric.dict() for metric in run_create.metrics]
+    for metric in metrcs:
+        metric['repo'] = run_create.repo
+
+    metrics = [Metric(**metric) for metric in metrcs]
     run_create = run_create.dict()
     run_create.pop("metrics")
     run = Run(metrics=metrics, **run_create)
