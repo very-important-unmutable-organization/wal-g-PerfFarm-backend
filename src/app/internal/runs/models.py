@@ -49,6 +49,7 @@ class RunCreateDocs(BaseModel):
     commit_time: datetime
     client_version: str
     client_environment: str
+    repo: str
     metrics: List["MetricBase"]
 
 
