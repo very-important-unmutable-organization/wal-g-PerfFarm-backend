@@ -34,6 +34,7 @@ class RunCreate(RunBaseWithMetrics):
 class MetricBase(SQLModel):
     name: str  # TODO enum
     value: float
+    repo: Optional[str]
 
 
 class Metric(MetricBase, table=True):

@@ -1,7 +1,7 @@
 from typing import List
 
 from fastapi import Depends
-from fastapi.params import Body
+from fastapi.params import Body, Path
 from fastapi.routing import APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -18,17 +18,18 @@ from app.internal.runs.models import (
     RunBaseWithMetricsAndIdDocs,
     RunCreate,
     RunCreateDocs,
+    MetricBase,
 )
 from app.pkg.auth.auth_bearer import JWTBearer
 
 runs_router = APIRouter(
-    prefix="/runs",
+    prefix="",
     tags=["runs"],
     responses={404: {"description": "Not found"}},
 )
 
 
-@runs_router.get("", dependencies=[Depends(JWTBearer(UserService()))], response_model=List[RunBaseWithMetricsAndIdDocs])
+@runs_router.get("/runs", dependencies=[Depends(JWTBearer(UserService()))], response_model=List[RunBaseWithMetricsAndIdDocs])
 async def get_runs(
     session: AsyncSession = Depends(get_session),
     user: User = Depends(get_jwt_bearer, use_cache=False),
@@ -39,7 +40,7 @@ async def get_runs(
     return runs
 
 
-@runs_router.post("", dependencies=[Depends(JWTBearer(UserService()))], response_model=Run)
+@runs_router.post("/runs", dependencies=[Depends(JWTBearer(UserService()))], response_model=Run)
 async def add_run(
     run_create: RunCreateDocs = Body(...),
     session: AsyncSession = Depends(get_session),
@@ -55,3 +56,28 @@ async def add_run(
     await session.refresh(run)
 
     return run
+
+
+@runs_router.get("/metrics/names", response_model=List[str])
+async def get_metrics_names(
+    session: AsyncSession = Depends(get_session),
+) -> List[str]:
+    result = await session.execute(select(Metric).distinct(Metric.name))
+    runs = result.scalars().all()
+    answer = []
+    for run in runs:
+        answer.append(run.name)
+
+    return answer
+
+
+@runs_router.get("/metrics/{name}", response_model=List[MetricBase])
+async def get_metrics_by_name(
+    session: AsyncSession = Depends(get_session),
+    name: str = Path(...)
+) -> List[MetricBase]:
+    result = await session.execute(select(Metric).where(Metric.name == name))
+    runs = result.scalars().all()
+
+    return runs
+
