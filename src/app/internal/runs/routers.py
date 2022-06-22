@@ -29,10 +29,9 @@ runs_router = APIRouter(
 )
 
 
-@runs_router.get("/runs", dependencies=[Depends(JWTBearer(UserService()))], response_model=List[RunBaseWithMetricsAndIdDocs])
+@runs_router.get("/runs", response_model=List[RunBaseWithMetricsAndIdDocs])
 async def get_runs(
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(get_jwt_bearer, use_cache=False),
 ) -> List[RunBaseWithMetricsAndId]:
     result = await session.execute(select(Run).options(selectinload(Run.metrics)))
     runs = result.scalars().all()
@@ -40,10 +39,11 @@ async def get_runs(
     return runs
 
 
-@runs_router.post("/runs", response_model=Run)
+@runs_router.post("/runs", dependencies=[Depends(JWTBearer(UserService()))], response_model=Run)
 async def add_run(
     run_create: RunCreateDocs = Body(...),
     session: AsyncSession = Depends(get_session),
+    user: User = Depends(get_jwt_bearer, use_cache=False),
 ) -> Run:
     metrics = [Metric(**metric.dict()) for metric in run_create.metrics]
     run_create = run_create.dict()
