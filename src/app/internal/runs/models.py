@@ -43,6 +43,7 @@ class MetricOut(SQLModel):
     repo: Optional[str]
     run: Run
 
+
 class Metric(MetricBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     run_id: Optional[int] = Field(default=None, foreign_key="run.id")
