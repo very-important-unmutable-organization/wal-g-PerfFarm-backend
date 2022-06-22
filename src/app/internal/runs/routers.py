@@ -40,11 +40,10 @@ async def get_runs(
     return runs
 
 
-@runs_router.post("/runs", dependencies=[Depends(JWTBearer(UserService()))], response_model=Run)
+@runs_router.post("/runs", response_model=Run)
 async def add_run(
     run_create: RunCreateDocs = Body(...),
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(get_jwt_bearer, use_cache=False),
 ) -> Run:
     metrics = [Metric(**metric.dict()) for metric in run_create.metrics]
     run_create = run_create.dict()
