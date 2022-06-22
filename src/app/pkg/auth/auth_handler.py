@@ -12,7 +12,7 @@ LIFE_TIME_JWT = get_int_from_env("LIFE_TIME_JWT", 600)
 
 
 def signJWT(user_id: str) -> str:
-    payload = {"user_id": user_id, "expires": time.time() + LIFE_TIME_JWT}
+    payload = {"user_id": user_id}
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
     return token
@@ -21,6 +21,6 @@ def signJWT(user_id: str) -> str:
 def decodeJWT(token: str) -> Dict:
     try:
         decoded_token = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-        return decoded_token if decoded_token["expires"] >= time.time() else None
+        return decoded_token
     except:
         return {}
