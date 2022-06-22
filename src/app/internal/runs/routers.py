@@ -18,7 +18,7 @@ from app.internal.runs.models import (
     RunBaseWithMetricsAndIdDocs,
     RunCreate,
     RunCreateDocs,
-    MetricBase,
+    MetricBase, MetricOut,
 )
 from app.pkg.auth.auth_bearer import JWTBearer
 
@@ -74,12 +74,12 @@ async def get_metrics_names(
     return answer
 
 
-@runs_router.get("/metrics/{name}", response_model=List[MetricBase])
+@runs_router.get("/metrics/{name}", response_model=List[MetricOut])
 async def get_metrics_by_name(
     session: AsyncSession = Depends(get_session),
     name: str = Path(...)
-) -> List[MetricBase]:
-    result = await session.execute(select(Metric).where(Metric.name == name))
+) -> List[MetricOut]:
+    result = await session.execute(select(Metric).where(Metric.name == name).options(selectinload(Metric.run)))
     runs = result.scalars().all()
 
     return runs
